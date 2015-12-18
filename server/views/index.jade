@@ -1,0 +1,17 @@
+doctype html
+html
+    head
+        title='Pizza Survey'
+        meta(name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0")
+        //- link(href='/css/styles.css' rel='stylesheet')
+        link(rel='stylesheet', href='css/materialize.min.css')
+        link(rel="shortcut icon",href="img/favicon.ico",type="image/x-icon")
+        link(rel="icon", href="img/favicon.ico", type="image/x-icon")
+
+        script.
+            window.INITIAL_APP_STATE = !{JSON.stringify(context)}
+
+    body
+        #app
+        script(src='/js/bundle.js')
+

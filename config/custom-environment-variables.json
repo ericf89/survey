@@ -1,0 +1,11 @@
+{
+    "dbName":"DB_NAME",
+    "dbUsername":"DB_USERNAME",
+    "dbPassword":"DB_PASSWORD",
+    "dbPort":"DB_PORT",
+    "sessionSecret":"SESSION_SECRET",
+    "redisIP":"REDIS_IP",
+    "redisPort":"REDIS_PORT",
+    "nodeEnv": "NODE_ENV",
+    "port": "PORT"
+}
