@@ -9,12 +9,7 @@ const Dashboard = React.createClass({
     render() {
         return (
             <div>
-                <div className="row">
-                    Welcome Admin!
-                </div>
-                <div>
-                    {this.props.children}
-                </div>
+                {this.props.children}
             </div>
         );
     },

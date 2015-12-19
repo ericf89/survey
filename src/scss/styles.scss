@@ -1,16 +1,58 @@
-$secondary: #009FFD;
-$tertiary: #2A2A72;
+@charset "UTF-8";
+
+// Mixins
+@import "components/prefixer";
+@import "components/mixins";
+@import "components/color";
+
+// Variables;
+@import "components/variables";
+
 
 .header{
     .btn {
-        background-color: $secondary;
         margin: 10px 0px;
-
-        &:hover {
-            background: $tertiary;
-        }
     }
     .logo {
         white-space: nowrap;
     }
+}
+
+.question-form {
+    [type="checkbox"]+label:before, [type="checkbox"]+label:after, [type="radio"]+label:before, [type="radio"]+label:after, .close-svg {
+        margin-top: 18px;
+    }
+
+    .close-svg {
+        cursor: pointer
+    }
+    .btn-large {
+        background: $tertiary-color;
+        &:hover {
+            background: #22223B;
+        }
+    }
+}
+
+
+.slide-enter {
+  opacity: 0.01;
+  transform: translateY(5em);
+  transition: all .25s ease-in;
+}
+
+.slide-enter.slide-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-leave {
+  opacity: 1;
+  transform: translateY(5em);
+  transition: all .25s ease-in;
+}
+
+.slide-leave.slide-leave-active {
+  opacity: 0;
+  transform: translateY(-5em);
 }
