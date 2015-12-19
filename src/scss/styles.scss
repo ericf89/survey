@@ -1,0 +1,16 @@
+$secondary: #009FFD;
+$tertiary: #2A2A72;
+
+.header{
+    .btn {
+        background-color: $secondary;
+        margin: 10px 0px;
+
+        &:hover {
+            background: $tertiary;
+        }
+    }
+    .logo {
+        white-space: nowrap;
+    }
+}

@@ -4,6 +4,7 @@ import redisStore from 'connect-redis';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import session from 'express-session';
+import sassMiddleware from 'node-sass-middleware';
 
 const app = express();
 const development = config.get('nodeEnv') === 'development';
@@ -27,6 +28,14 @@ app.use(session({
 }));
 
 app.use(compression());
+
+app.use(sassMiddleware({
+    src: 'src/scss/',
+    dest: 'build/css',
+    debug: development,
+    outputStyle: 'compressed',
+    prefix: '/css/',
+}));
 
 app.set('views', 'server/views');
 app.use(express.static('build'));

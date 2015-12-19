@@ -38,6 +38,7 @@
     "express-session": "^1.12.1",
     "history": "1.13.0",
     "jade": "^1.11.0",
+    "node-sass-middleware": "^0.9.7",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.1",
