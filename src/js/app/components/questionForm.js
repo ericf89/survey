@@ -1,43 +1,50 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import CloseSVG from 'app/components/svgs/close';
 import AddSVG from 'app/components/svgs/add';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { updateForm, addChoice, updateChoice, removeChoice } from 'app/actions';
 
 const QuestionForm = React.createClass({
+    propTypes: {
+        dispatch: PropTypes.func.isRequired, // Injected by connect.
+        prompt: PropTypes.string.isRequired,
+        choices: PropTypes.array.isRequired,
+        multiAnswer: PropTypes.bool.isRequired,
+    },
     getInitialState() {
-        return Object.assign({
-            prompt: '',
-            choices: [{ id: 0, value: '' }, { id: 1, value: '' }],
-            idCounter: 2,
-            multiAnswer: false,
-        }, this.props);
+        const choices = this.props.choices;
+        const idCounter = choices[choices.length - 1].id + 1;
+        return { idCounter };
+    },
+    componentDidUpdate(prevProps) {
+        const choices = this.props.choices;
+        if (choices.length > prevProps.choices.length) {
+            this.refs[choices[choices.length - 1].id].focus();
+        }
     },
     getId() {
         this.setState(state => state.idCounter++);
         return this.state.idCounter;
     },
     updateChoice(index) {
-        return ({ target: { value } }) => this.setState(state => state.choices[index].value = value);
+        return ({ target: { value } }) => this.props.dispatch(updateChoice(index, value));
     },
-    addChoice(cb) {
-        if (this.state.choices.length < 5) {
-            const newId = this.getId();
-            this.setState(state => state.choices.push({ id: newId, value: '' }), () => typeof cb === 'function' ? cb(newId) : null);
-        }
+    addChoice() {
+        this.props.dispatch(addChoice(this.getId()));
     },
     choiceEnterKeyHandler(key, index) {
-        const choices = this.state.choices;
+        const choices = this.props.choices;
         if (key === 'Enter') {
             if (index === choices.length - 1) {
-                this.addChoice((newChoiceId) => this.refs[newChoiceId].focus());
+                this.addChoice();
             } else {
                 this.refs[choices[index + 1].id].focus();
             }
         }
     },
     render() {
-        const { prompt, choices, multiAnswer } = this.state;
+        const { prompt, choices, multiAnswer, dispatch } = this.props;
         let ctaButton = null;
         if (prompt.trim() !== '' && choices.length >= 2 && choices.every(c => c.value.trim() !== '')) {
             ctaButton = (
@@ -56,7 +63,7 @@ const QuestionForm = React.createClass({
                 <div className="row">
                     <div className="col s12">
                         <h6>Prompt:</h6>
-                        <input type="text" placeholder="What's your favorite topping?" value={prompt} onChange={({ target: { value } }) => this.setState(state => state.prompt = value)} />
+                        <input type="text" placeholder="What's your favorite topping?" value={prompt} onChange={({ target: { value } }) => dispatch(updateForm('prompt', value))} />
                     </div>
                 </div>
                 <div className="row">
@@ -65,7 +72,7 @@ const QuestionForm = React.createClass({
                         <div className="switch">
                             <label>
                                 No
-                                <input type="checkbox" checked={multiAnswer} onChange={({ target: { checked } }) => this.setState(state => state.multiAnswer = checked)} />
+                                <input type="checkbox" checked={multiAnswer} onChange={({ target: { checked } }) => dispatch(updateForm('multiAnswer', checked))} />
                                 <span className="lever"></span>
                                 Yes
                             </label>
@@ -74,7 +81,7 @@ const QuestionForm = React.createClass({
                 </div>
                 <ReactCSSTransitionGroup component="div" transitionName="slide" transitionEnterTimeout={250} transitionLeaveTimeout={250}>
                     {choices.map((choice, i) => (
-                        <div key={`choice_key_${String(choice.id)}`} className="row">
+                        <div key={`choice_key_${choice.id}`} className="row">
                             <div className="col s1">
                                 <input disabled="disabled" id={`choice_${i}`} type={multiAnswer ? 'checkbox' : 'radio'}/>
                                 <label htmlFor={`choice_${i}`}></label>
@@ -82,7 +89,7 @@ const QuestionForm = React.createClass({
                             <div className="col s10">
                                 <input type="text" ref={choice.id} value={choice.value} onKeyPress={({ key }) => this.choiceEnterKeyHandler(key, i)} onChange={this.updateChoice(i)} placeholder="Enter an option" />
                             </div>
-                            <div className="col s1" onClick={() => this.setState(state => state.choices.length > 2 ? state.choices.splice(i, 1) : state)}>
+                            <div className="col s1" onClick={() => dispatch(removeChoice(choice.id))}>
                                 { choices.length > 2 ? React.createElement(CloseSVG) : null}
                             </div>
                         </div>
@@ -105,4 +112,4 @@ const QuestionForm = React.createClass({
 });
 
 
-export default connect(i => i)(QuestionForm);
+export default connect(state => state.questionForm)(QuestionForm);

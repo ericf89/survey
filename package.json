@@ -50,6 +50,7 @@
     "redux-devtools-dock-monitor": "^1.0.1",
     "redux-devtools-log-monitor": "^1.0.1",
     "redux-simple-router": "^1.0.0",
+    "redux-thunk": "^1.0.2",
     "sequelize": "^3.14.2",
     "watchify": "^3.6.1"
   }
