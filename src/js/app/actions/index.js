@@ -1,5 +1,5 @@
 import * as types from './types';
-
+import superagent from 'superagent';
 export function updateForm(formProp, newValue) {
     return {
         type: types.UPDATE_FORM,
@@ -25,5 +25,17 @@ export function removeChoice(id) {
     return {
         type: types.REMOVE_CHOICE,
         id,
+    };
+}
+
+export function login(username, password) {
+    return dispatch => {
+        dispatch({ type: types.LOGIN, username, password });
+        superagent.post('/login')
+                  .send({ username, password })
+                  .end((err, res) => {
+                      const type = err ? types.LOGIN_FAILURE : types.LOGIN_SUCCESS;
+                      dispatch({ type, res });
+                  });
     };
 }

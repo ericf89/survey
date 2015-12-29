@@ -34,6 +34,14 @@
     }
 }
 
+.login-form {
+  .btn {
+    background: $tertiary-color;
+    &:hover {
+      background: #22223B;
+    }
+  }
+}
 
 .slide-enter {
   opacity: 0.01;

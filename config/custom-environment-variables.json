@@ -1,7 +1,8 @@
 {
     "dbName":"DB_NAME",
-    "dbUsername":"DB_USERNAME",
+    "dbUser":"DB_USER",
     "dbPassword":"DB_PASSWORD",
+    "dbHost": "DB_HOST",
     "dbPort":"DB_PORT",
     "sessionSecret":"SESSION_SECRET",
     "redisIP":"REDIS_IP",
