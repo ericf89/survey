@@ -1,10 +1,13 @@
 import * as types from './types';
 import superagent from 'superagent';
+import { pushPath } from 'redux-simple-router';
+
 export function updateForm(formProp, newValue) {
     return {
         type: types.UPDATE_FORM,
         formProp,
         newValue,
+        meta: { debounce: { time: 300 } },
     };
 }
 
@@ -19,6 +22,7 @@ export function updateChoice(index, newValue) {
         type: types.UPDATE_CHOICE,
         index,
         newValue,
+        meta: { debounce: { time: 300 } },
     };
 }
 export function removeChoice(id) {
@@ -30,12 +34,14 @@ export function removeChoice(id) {
 
 export function login(username, password) {
     return dispatch => {
+        if (!username || !password) return;
         dispatch({ type: types.LOGIN, username, password });
         superagent.post('/login')
                   .send({ username, password })
                   .end((err, res) => {
                       const type = err ? types.LOGIN_FAILURE : types.LOGIN_SUCCESS;
-                      dispatch({ type, res });
+                      dispatch({ type, err: res.body.err, username });
+                      if (type === types.LOGIN_SUCCESS) dispatch(pushPath('/'));
                   });
     };
 }

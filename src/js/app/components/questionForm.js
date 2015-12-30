@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux';
 import CloseSVG from 'app/components/svgs/close';
 import AddSVG from 'app/components/svgs/add';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { updateForm, addChoice, updateChoice, removeChoice } from 'app/actions';
+import DelayedInput from 'react-debounce-input';
 
 const QuestionForm = React.createClass({
     propTypes: {
@@ -20,7 +22,7 @@ const QuestionForm = React.createClass({
     componentDidUpdate(prevProps) {
         const choices = this.props.choices;
         if (choices.length > prevProps.choices.length) {
-            this.refs[choices[choices.length - 1].id].focus();
+            findDOMNode(this.refs[choices[choices.length - 1].id]).focus();
         }
     },
     getId() {
@@ -39,7 +41,7 @@ const QuestionForm = React.createClass({
             if (index === choices.length - 1) {
                 this.addChoice();
             } else {
-                this.refs[choices[index + 1].id].focus();
+                findDOMNode(this.refs[choices[index + 1].id]).focus();
             }
         }
     },
@@ -63,7 +65,7 @@ const QuestionForm = React.createClass({
                 <div className="row">
                     <div className="col s12">
                         <h6>Prompt:</h6>
-                        <input type="text" placeholder="What's your favorite topping?" value={prompt} onChange={({ target: { value } }) => dispatch(updateForm('prompt', value))} />
+                        <DelayedInput debounceTimeout={300} type="text" placeholder="What's your favorite topping?" value={prompt} onChange={({ target: { value } }) => dispatch(updateForm('prompt', value)) } />
                     </div>
                 </div>
                 <div className="row">
@@ -87,9 +89,9 @@ const QuestionForm = React.createClass({
                                 <label htmlFor={`choice_${i}`}></label>
                             </div>
                             <div className="col s10">
-                                <input type="text" ref={choice.id} value={choice.value} onKeyPress={({ key }) => this.choiceEnterKeyHandler(key, i)} onChange={this.updateChoice(i)} placeholder="Enter an option" />
+                                <DelayedInput debounceTimeout={300} type="text" ref={choice.id} value={choice.value} onKeyPress={({ key }) => this.choiceEnterKeyHandler(key, i)} onChange={this.updateChoice(i)} placeholder="Enter an option" />
                             </div>
-                            <div className="col s1" onClick={() => dispatch(removeChoice(choice.id))}>
+                            <div className="col s1" onClick={() => { this.refs[choice.id].notify.cancel(); dispatch(removeChoice(choice.id)); }}>
                                 { choices.length > 2 ? React.createElement(CloseSVG) : null}
                             </div>
                         </div>

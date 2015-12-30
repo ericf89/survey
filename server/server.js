@@ -101,15 +101,15 @@ app.post('/login', (req, res) => {
     User.findOne({ where: { username: req.session.id } }).then(user => {
         if (user) {
             user.update({ username, password }).then(() => {
-                return req.logIn(user, () => res.sendStatus(200));
-            }).catch(() => res.status(400).json({ err: 'username already exists' }));
+                return req.logIn(user, () => res.status(200).json({}));
+            }).catch(() => res.status(400).json({ err: 'Username already exists.' }));
         } else {
             User.findOne({
                 where: { username },
             }).then(userByUsername => {
-                if (userByUsername && userByUsername.password === password) return req.logIn(user, () => res.sendStatus(200));
+                if (userByUsername && userByUsername.password === password) return req.logIn(user, () => res.status(200).json({}));
 
-                return res.status(401).json({ err: 'invalid username or password' });
+                return res.status(401).json({ err: 'Invalid username or password.' });
             });
         }
     });
