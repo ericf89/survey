@@ -18,6 +18,13 @@
     }
 }
 
+.btn.tertiary {
+    background: $tertiary-color;
+    &:hover {
+      background: #22223B;
+    }
+  }
+
 .question-form {
     [type="checkbox"]+label:before, [type="checkbox"]+label:after, [type="radio"]+label:before, [type="radio"]+label:after, .close-svg {
         margin-top: 18px;
@@ -34,14 +41,6 @@
     }
 }
 
-.login-form {
-  .btn {
-    background: $tertiary-color;
-    &:hover {
-      background: #22223B;
-    }
-  }
-}
 
 .slide-enter {
   opacity: 0.01;

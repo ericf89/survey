@@ -98,20 +98,42 @@ app.post('/login', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) return res.sendStatus(400);
 
-    User.findOne({ where: { username: req.session.id } }).then(user => {
-        if (user) {
-            user.update({ username, password }).then(() => {
-                return req.logIn(user, () => res.status(200).json({}));
-            }).catch(() => res.status(400).json({ err: 'Username already exists.' }));
-        } else {
-            User.findOne({
-                where: { username },
-            }).then(userByUsername => {
-                if (userByUsername && userByUsername.password === password) return req.logIn(user, () => res.status(200).json({}));
-
-                return res.status(401).json({ err: 'Invalid username or password.' });
-            });
+    Promise.all([
+        User.findOne({ where: { username } }),
+        User.findOne({ where: { username: req.session.id } }),
+    ]).then(results => {
+        const [requestedUser, sessionUser] = results;
+        if (requestedUser && password === requestedUser.password) {
+            if (sessionUser) {
+                // Copy all session user stuff to real user.
+                // Delete session user.
+            }
+            return req.logIn(requestedUser, () => res.status(200).json({}));
         }
+        return res.status(401).json({ err: { code: requestedUser ? 100 : 101, msg: requestedUser ? 'Invalid password.' : 'That user doesn\'t exist yet... Correct your info and login again or register it!' } });
+    });
+});
+
+app.post('/register', (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) return res.sendStatus(400);
+
+    Promise.all([
+        User.findOne({ where: { username } }),
+        User.findOne({ where: { username: req.session.id } }),
+    ]).then(results => {
+        const [requestedUser, sessionUser] = results;
+        if (requestedUser) return res.status(400).json({ err: { code: 102, msg: 'User already exists.' } });
+        sessionUser.update({ username, password }).then(() => {
+            return req.logIn(sessionUser, () => res.status(200).json({ username }));
+        }).catch(() => res.status(500).json({ err: { code: 500, msg: '-_-' } }));
+    });
+});
+
+app.use('/logout', (req, res) => {
+    return req.session.destroy((err) => {
+        if (err) return res.status(500).json({ err: { code: 500, msg: err } });
+        return res.redirect('/');
     });
 });
 
@@ -124,7 +146,8 @@ app.use((req, res, next) => {
 
 
 app.use('*', (req, res, next) => {
-    req.context = {};
+    const username = req.user && req.user.username.length < 30 ? req.user.username : undefined;
+    req.context = { username };
     next();
 });
 

@@ -1,15 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { logout } from 'app/actions';
 
 const Dashboard = React.createClass({
     displayName: 'dashboard',
     propTypes: {
         children: PropTypes.object,
         username: PropTypes.string,
+        dispatch: PropTypes.func.isRequired,
     },
     render() {
-        const { username } = this.props;
+        const { username, dispatch } = this.props;
         return (
             <div>
                 <div className="row">
@@ -23,6 +25,11 @@ const Dashboard = React.createClass({
                         <p>Be sure to drink your Ovaltine! </p>
                     </div>
                 }
+                {!this.props.children && username ?
+                    <div className="row center">
+                        <h6 className="col s12">Or... <a href="#" onClick={() => dispatch(logout())}>logout.</a> :(</h6>
+                    </div>
+                : null }
             </div>
         );
     },

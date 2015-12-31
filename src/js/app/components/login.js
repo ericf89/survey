@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import cn from 'classnames';
-import { login } from 'app/actions';
+import { login, register } from 'app/actions';
 
 const Login = React.createClass({
 
     propTypes: {
         dispatch: PropTypes.func.isRequired,
         errorMessage: PropTypes.string,
+        infoMessage: PropTypes.string,
         loading: PropTypes.bool.isRequired,
     },
     getInitialState() {
@@ -17,12 +18,18 @@ const Login = React.createClass({
         };
     },
     render() {
-        const dispatch = this.props.dispatch;
-        const error = this.props.errorMessage ? (
+        const { dispatch, errorMessage, infoMessage } = this.props;
+        const error = errorMessage ? (
             <div className="card-panel red  darken-2 center">
-                <span className="white-text">{this.props.errorMessage}</span>
+                <span className="white-text">{errorMessage}</span>
             </div>
         ) : null;
+        const info = infoMessage ? (
+            <div style={{ backgroundColor: '#F9C80E' }} className="card-panel center z-depth-0">
+                <span className="">{infoMessage}</span>
+            </div>
+        ) : null;
+        const disabled = this.props.loading || !this.state.username || !this.state.password;
         return (
             <div className="login-form">
                 <div className="row">
@@ -46,16 +53,33 @@ const Login = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col s2 offset-s5 offset-m5 m4">
+                    <div className="col s12 center">
                         <span
-                          className={cn('btn', { disabled: this.props.loading || !this.state.username || !this.state.password })}
+                          className={cn('btn', { disabled, tertiary: info })}
                           onClick={ () => dispatch(login(this.state.username, this.state.password)) }
-                        >Login!</span>
+                        >
+                            Login!
+                        </span>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col s12 center">
+                        {info ?
+                            <span
+                              className={cn('btn z-depth-3', { disabled })}
+                              onClick={ () => dispatch(register(this.state.username, this.state.password)) }
+                            >
+                                Register!
+                            </span>
+                        : null }
                     </div>
                 </div>
                 <div className="row">
                     <div className="col s12">
                         {error}
+                    </div>
+                    <div className="col s12">
+                        {info}
                     </div>
                 </div>
             </div>

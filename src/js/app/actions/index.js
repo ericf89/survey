@@ -40,8 +40,36 @@ export function login(username, password) {
                   .send({ username, password })
                   .end((err, res) => {
                       const type = err ? types.LOGIN_FAILURE : types.LOGIN_SUCCESS;
-                      dispatch({ type, err: res.body.err, username });
+                      const { msg, code } = res.body.err || {};
+                      dispatch({ type, msg, code, username });
                       if (type === types.LOGIN_SUCCESS) dispatch(pushPath('/'));
+                  });
+    };
+}
+
+export function register(username, password) {
+    return dispatch => {
+        if (!username || !password) return;
+        dispatch({ type: types.REGISTER, username, password });
+        superagent.post('/register')
+                  .send({ username, password })
+                  .end((err) => {
+                      const type = err ? types.REGISTER_FAILURE : types.REGISTER_SUCCESS;
+                      const { msg, code } = err || {};
+                      dispatch({ type, msg, code, username });
+                      if (type === types.REGISTER_SUCCESS) dispatch(pushPath('/'));
+                  });
+    };
+}
+
+export function logout() {
+    return dispatch => {
+        superagent.post('/logout')
+                  .send({})
+                  .end((err) => {
+                      if (err) return;
+                      dispatch({ type: types.LOGOUT });
+                      dispatch(pushPath('/'));
                   });
     };
 }

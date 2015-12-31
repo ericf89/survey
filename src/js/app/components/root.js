@@ -10,8 +10,8 @@ const RootComponent = ({ children, username }) => (
             </div>
             <div className="col s2 offset-m6 m3">
             { username ?
-                <Link activeClassName="disabled" className="white-text btn" to="/dashboard">Dashboard</Link> :
-                <Link activeClassName="disabled" className="white-text btn" to="/login">Login</Link>
+                <Link activeClassName="tertiary flat" className="white-text btn" to="/dashboard">Dashboard</Link> :
+                <Link activeClassName="hide" className="white-text btn" to="/login">Login</Link>
             }
             </div>
         </div>
