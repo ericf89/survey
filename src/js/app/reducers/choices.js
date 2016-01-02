@@ -5,7 +5,6 @@ export default function (state = [], action) {
     case types.ADD_CHOICE:
         if (state.length >= 5) return state;
         return [...state, {
-            id: action.id,
             value: '',
         }];
     case types.UPDATE_CHOICE:
@@ -17,7 +16,7 @@ export default function (state = [], action) {
     case types.REMOVE_CHOICE:
         if (state.length <= 2) return state;
 
-        return [...state.filter(c => c.id !== action.id)];
+        return [...state.slice(0, action.index), ...state.slice(action.index + 1)];
     default:
         return state;
     }

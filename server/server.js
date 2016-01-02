@@ -58,14 +58,14 @@ const sequelize = new Sequelize(config.get('dbName'), config.get('dbUser'), conf
 const User = require('./models/user').default(sequelize);
 const Question = require('./models/question').default(sequelize);
 const Choice = require('./models/choice').default(sequelize);
-const userAnswer = require('./models/userAnswer').default(sequelize);
+const UserAnswer = require('./models/userAnswer').default(sequelize);
 
 User.hasMany(Question);
 Question.hasMany(Choice);
-userAnswer.belongsTo(User);
-userAnswer.belongsTo(Question);
-userAnswer.belongsToMany(Choice, { through: 'answerChoice' });
-Choice.belongsToMany(userAnswer, { through: 'answerChoice' });
+UserAnswer.belongsTo(User);
+UserAnswer.belongsTo(Question);
+UserAnswer.belongsToMany(Choice, { through: 'answerChoice' });
+Choice.belongsToMany(UserAnswer, { through: 'answerChoice' });
 sequelize.sync();
 
 passport.use(new Strategy(
@@ -94,7 +94,7 @@ app.set('view engine', 'jade');
 app.disable('x-powered-by');
 app.use(bodyParser.json());
 
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) return res.sendStatus(400);
 
@@ -114,7 +114,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/register', (req, res) => {
+app.post('/api/register', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) return res.sendStatus(400);
 
@@ -128,6 +128,28 @@ app.post('/register', (req, res) => {
             return req.logIn(sessionUser, () => res.status(200).json({ username }));
         }).catch(() => res.status(500).json({ err: { code: 500, msg: '-_-' } }));
     });
+});
+
+app.post('/api/questions', (req, res) => {
+    const { prompt = '', choices = [], multiAnswer = false } = req.body || {};
+    if (!prompt || !choices.length > 1) return res.status(400).json({ err: { code: 103, msg: 'Missing required fields.' } });
+
+    Question.create({ prompt, multiAnswer, userId: req.user.id })
+            .then(newQuestion => Promise.all([newQuestion, Choice.bulkCreate(choices.map(({ value }) => Object.assign({ value, questionId: newQuestion.id })))]))
+            .then(([{ id: newQuestionId }]) => res.status(201).json({ newQuestionId }));
+});
+
+app.get('/api/questions', (req, res) => {
+    Question.findAll({
+        where: {
+            userId: req.user.id,
+        },
+        include: [{
+            model: Choice,
+            include: UserAnswer,
+        }],
+        order: 'createdAt DESC',
+    }).then((results) => res.status(200).json(results.map(r => r.toJSON())));
 });
 
 app.use('/logout', (req, res) => {

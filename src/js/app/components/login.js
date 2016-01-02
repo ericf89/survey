@@ -17,6 +17,12 @@ const Login = React.createClass({
             password: '',
         };
     },
+    passwordEnterKeyHandler({ key }) {
+        const { username, password } = this.state;
+        if (key === 'Enter') {
+            this.props.dispatch(login(username, password));
+        }
+    },
     render() {
         const { dispatch, errorMessage, infoMessage } = this.props;
         const error = errorMessage ? (
@@ -48,6 +54,7 @@ const Login = React.createClass({
                           id="password"
                           onChange={({ target: { value } }) => this.setState(state => state.password = value)}
                           type="password"
+                          onKeyPress={this.passwordEnterKeyHandler}
                           value={this.state.password}
                         />
                     </div>

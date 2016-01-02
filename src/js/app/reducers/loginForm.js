@@ -14,10 +14,12 @@ export default function (state = defaultState, action) {
 
     case types.LOGIN_SUCCESS:
     case types.LOGIN_FAILURE:
-        const newState = { loading: false };
+    case types.REGISTER_SUCCESS:
+    case types.REGISTER_FAILURE:
+        const newState = { loading: false, infoMessage: undefined, errorMessage: undefined };
         const { code, msg } = action;
+
         newState[code === 101 ? 'infoMessage' : 'errorMessage'] = msg;
-        newState[code !== 101 ? 'infoMessage' : 'errorMessage'] = undefined;
         return Object.assign({}, state, newState);
 
     default:

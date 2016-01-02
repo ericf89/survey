@@ -6,6 +6,7 @@ const defaultState = {
     choices: [{ id: 0, value: '' }, { id: 1, value: '' }],
     idCounter: 2,
     multiAnswer: false,
+    loading: false,
 };
 
 export default function (state = defaultState, action) {
@@ -19,6 +20,13 @@ export default function (state = defaultState, action) {
     case types.REMOVE_CHOICE:
         return Object.assign({}, state, { choices: choices(state.choices, action) });
 
+    case types.SUBMIT_FORM:
+        return Object.assign({}, state, { loading: true });
+
+    case types.SUBMIT_FORM_SUCCESS:
+        return Object.assign({}, defaultState);
+    case types.SUBMIT_FORM_FAILURE:
+        return Object.assign({}, state, { loading: false });
     default:
         return state;
     }

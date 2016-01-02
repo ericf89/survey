@@ -2,6 +2,10 @@ export const UPDATE_FORM = 'UPDATE_FORM';
 export const ADD_CHOICE = 'ADD_CHOICE';
 export const UPDATE_CHOICE = 'UPDATE_CHOICE';
 export const REMOVE_CHOICE = 'REMOVE_CHOICE';
+export const SUBMIT_FORM = 'SUBMIT_FORM';
+export const SUBMIT_FORM_SUCCESS = 'SUBMIT_FORM_SUCCESS';
+export const SUBMIT_FORM_FAILURE = 'SUBMIT_FORM_FAILURE';
+
 
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';

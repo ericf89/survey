@@ -11,10 +11,10 @@ export function updateForm(formProp, newValue) {
     };
 }
 
-export function addChoice(id) {
+export function addChoice(index) {
     return {
         type: types.ADD_CHOICE,
-        id,
+        index,
     };
 }
 export function updateChoice(index, newValue) {
@@ -22,13 +22,12 @@ export function updateChoice(index, newValue) {
         type: types.UPDATE_CHOICE,
         index,
         newValue,
-        meta: { debounce: { time: 300 } },
     };
 }
-export function removeChoice(id) {
+export function removeChoice(index) {
     return {
         type: types.REMOVE_CHOICE,
-        id,
+        index,
     };
 }
 
@@ -36,7 +35,7 @@ export function login(username, password) {
     return dispatch => {
         if (!username || !password) return;
         dispatch({ type: types.LOGIN, username, password });
-        superagent.post('/login')
+        superagent.post('/api/login')
                   .send({ username, password })
                   .end((err, res) => {
                       const type = err ? types.LOGIN_FAILURE : types.LOGIN_SUCCESS;
@@ -51,11 +50,11 @@ export function register(username, password) {
     return dispatch => {
         if (!username || !password) return;
         dispatch({ type: types.REGISTER, username, password });
-        superagent.post('/register')
+        superagent.post('/api/register')
                   .send({ username, password })
-                  .end((err) => {
+                  .end((err, res) => {
                       const type = err ? types.REGISTER_FAILURE : types.REGISTER_SUCCESS;
-                      const { msg, code } = err || {};
+                      const { msg, code } = res.body.err || {};
                       dispatch({ type, msg, code, username });
                       if (type === types.REGISTER_SUCCESS) dispatch(pushPath('/'));
                   });
@@ -66,10 +65,25 @@ export function logout() {
     return dispatch => {
         superagent.post('/logout')
                   .send({})
-                  .end((err) => {
+                  .end(err => {
                       if (err) return;
                       dispatch({ type: types.LOGOUT });
                       dispatch(pushPath('/'));
+                  });
+    };
+}
+
+export function submitNewQuestion() {
+    return (dispatch, getState) => {
+        dispatch({ type: types.SUBMIT_FORM });
+        const { questionForm } = getState();
+        superagent.post('/api/questions')
+                  .send(questionForm)
+                  .end((err, res) => {
+                      const type = err ? types.SUBMIT_FORM_FAILURE : types.SUBMIT_FORM_SUCCESS;
+                      const { msg, code } = res.body.err || {};
+                      dispatch({ type, msg, code });
+                      dispatch(pushPath('/stats/'));
                   });
     };
 }

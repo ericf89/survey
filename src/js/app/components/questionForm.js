@@ -3,8 +3,7 @@ import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux';
 import CloseSVG from 'app/components/svgs/close';
 import AddSVG from 'app/components/svgs/add';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { updateForm, addChoice, updateChoice, removeChoice } from 'app/actions';
+import { updateForm, addChoice, updateChoice, removeChoice, submitNewQuestion } from 'app/actions';
 import DelayedInput from 'react-debounce-input';
 
 const QuestionForm = React.createClass({
@@ -22,7 +21,7 @@ const QuestionForm = React.createClass({
     componentDidUpdate(prevProps) {
         const choices = this.props.choices;
         if (choices.length > prevProps.choices.length) {
-            findDOMNode(this.refs[choices[choices.length - 1].id]).focus();
+            findDOMNode(this.refs[`choice_${this.props.choices.length - 1}`]).focus();
         }
     },
     getId() {
@@ -41,7 +40,7 @@ const QuestionForm = React.createClass({
             if (index === choices.length - 1) {
                 this.addChoice();
             } else {
-                findDOMNode(this.refs[choices[index + 1].id]).focus();
+                findDOMNode(this.refs[`choice_${index + 1}`]).focus();
             }
         }
     },
@@ -52,16 +51,13 @@ const QuestionForm = React.createClass({
             ctaButton = (
                 <div className="row">
                     <div className="col s12 m4 offset-m4">
-                        <span className="btn-large center"> Ask Away! </span>
+                        <span className="btn-large center" onClick={() => dispatch(submitNewQuestion())}> Ask Away! </span>
                     </div>
                 </div>
             );
         }
         return (
             <div className="question-form">
-                <div className="row">
-                    <h3>New Question</h3>
-                </div>
                 <div className="row">
                     <div className="col s12">
                         <h6>Prompt:</h6>
@@ -81,33 +77,31 @@ const QuestionForm = React.createClass({
                         </div>
                     </div>
                 </div>
-                <ReactCSSTransitionGroup component="div" transitionName="slide" transitionEnterTimeout={250} transitionLeaveTimeout={250}>
-                    {choices.map((choice, i) => (
-                        <div key={`choice_key_${choice.id}`} className="row">
-                            <div className="col s1">
-                                <input disabled="disabled" id={`choice_${i}`} type={multiAnswer ? 'checkbox' : 'radio'}/>
-                                <label htmlFor={`choice_${i}`}></label>
-                            </div>
-                            <div className="col s10">
-                                <DelayedInput debounceTimeout={300} type="text" ref={choice.id} value={choice.value} onKeyPress={({ key }) => this.choiceEnterKeyHandler(key, i)} onChange={this.updateChoice(i)} placeholder="Enter an option" />
-                            </div>
-                            <div className="col s1" onClick={() => { this.refs[choice.id].notify.cancel(); dispatch(removeChoice(choice.id)); }}>
-                                { choices.length > 2 ? React.createElement(CloseSVG) : null}
-                            </div>
+                {choices.map((choice, i) => (
+                    <div key={`choice_${i}`} className="row">
+                        <div className="col s1">
+                            <input disabled="disabled" id={`choice_${i}`} type={multiAnswer ? 'checkbox' : 'radio'}/>
+                            <label htmlFor={`choice_${i}`}></label>
                         </div>
-                    ))}
-                    <div className="row">
-                        <div className="col offset-s11 s1">
-                            { choices.length < 5 ? React.createElement('span',
-                                {
-                                    className: 'btn-floating',
-                                    onClick: this.addChoice,
-                                }, React.createElement(AddSVG)) : null
-                            }
+                        <div className="col s10">
+                            <DelayedInput debounceTimeout={300} type="text" ref={`choice_${i}`} value={choice.value} onKeyPress={({ key }) => this.choiceEnterKeyHandler(key, i)} onChange={this.updateChoice(i)} placeholder="Enter an option" />
+                        </div>
+                        <div className="col s1" onClick={() => { this.refs[`choice_${i}`].notify.cancel(); dispatch(removeChoice(i)); }}>
+                            { choices.length > 2 ? React.createElement(CloseSVG) : null}
                         </div>
                     </div>
-                    {ctaButton}
-                </ReactCSSTransitionGroup>
+                ))}
+                <div className="row">
+                    <div className="col offset-s11 s1">
+                        { choices.length < 5 ? React.createElement('span',
+                            {
+                                className: 'btn-floating',
+                                onClick: this.addChoice,
+                            }, React.createElement(AddSVG)) : null
+                        }
+                    </div>
+                </div>
+                {ctaButton}
             </div>
         );
     },
