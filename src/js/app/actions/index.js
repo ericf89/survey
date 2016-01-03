@@ -87,3 +87,18 @@ export function submitNewQuestion() {
                   });
     };
 }
+
+export function getCurrentStats() {
+    return dispatch => {
+        dispatch({ type: types.GET_STATS });
+        superagent.get('/api/questions')
+                  .end((err, res) => {
+                      const type = err ? types.GET_STATS_FAILURE : types.GET_STATS_SUCCESS;
+                      if (err) return dispatch({ type });
+                      dispatch({ type, questions: res.body });
+                  });
+    };
+}
+
+export function nextStat() { return { type: types.NEXT_STAT }; }
+export function previousStat() { return { type: types.PREVIOUS_STAT }; }

@@ -15,3 +15,9 @@ export const LOGOUT = 'LOGOUT';
 export const REGISTER = 'REGISTER';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAILURE = 'REGISTER_FAILURE';
+
+export const GET_STATS = 'GET_STATS';
+export const GET_STATS_SUCCESS = 'GET_STATS_SUCCESS';
+export const GET_STATS_FAILURE = 'GET_STATS_FAILURE';
+export const NEXT_STAT = 'NEXT_STAT';
+export const PREVIOUS_STAT = 'PREVIOUS_STAT';

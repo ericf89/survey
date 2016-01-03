@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { logout } from 'app/actions';
+import { logout, getCurrentStats } from 'app/actions';
 
 const Dashboard = React.createClass({
     displayName: 'dashboard',
@@ -15,9 +15,22 @@ const Dashboard = React.createClass({
         return (
             <div>
                 <div className="row">
-                    <Link className="black-text col s5 offset-s2 card-panel center z-depth-1" activeClassName="z-depth-3 white-text orange" to ="/dashboard/stats"><h5>Stats</h5></Link>
+                    <Link
+                      className="black-text col s5 offset-s2 card-panel center z-depth-1"
+                      activeClassName="z-depth-3 white-text orange"
+                      to="/dashboard/stats"
+                      onClick={() => dispatch(getCurrentStats())}
+                    >
+                        <h5>Stats</h5>
+                    </Link>
                     <div className="col s2">&nbsp;</div>
-                    <Link className="black-text col s5 card-panel center z-depth-1" activeClassName="z-depth-3 white-text orange" to="/dashboard/new-question"><h5>New&nbsp;Question</h5></Link>
+                    <Link
+                      className="black-text col s5 card-panel center z-depth-1"
+                      activeClassName="z-depth-3 white-text orange"
+                      to="/dashboard/new-question"
+                    >
+                        <h5>New&nbsp;Question</h5>
+                    </Link>
                 </div>
                 {this.props.children ||
                     <div className="row center">
