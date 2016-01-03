@@ -1,0 +1,6 @@
+WAIT=10
+ATTEMPTS=10
+
+/
+/css/styles.css
+/js/bundle.js

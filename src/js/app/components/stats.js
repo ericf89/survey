@@ -34,7 +34,7 @@ const Stats = React.createClass({
                         <tr key={`choice${idx}`}>
                             <td>{value}</td>
                             <td>{userAnswers.length}</td>
-                            <td>{userAnswers.length / totalResponses * 100 || 0}%</td>
+                            <td>{(userAnswers.length / totalResponses * 100 || 0).toFixed(0)}%</td>
                         </tr>
                         )
                     )}

@@ -41,19 +41,23 @@ app.use(sassMiddleware({
     prefix: '/css/',
 }));
 
-const sequelize = new Sequelize(config.get('dbName'), config.get('dbUser'), config.get('dbPassword'), {
-    host: config.get('dbHost'),
-    dialect: 'mysql',
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000,
-    },
-    define: {
-        timestamps: true,
-        paranoid: true,
-    },
-});
+const sequelize = config.has('dbUrl') ?
+
+    new Sequelize(config.get('dbUrl')) :
+
+    new Sequelize(config.get('dbName'), config.get('dbUser'), config.get('dbPassword'), {
+        host: config.get('dbHost'),
+        dialect: 'mysql',
+        pool: {
+            max: 5,
+            min: 0,
+            idle: 10000,
+        },
+        define: {
+            timestamps: true,
+            paranoid: true,
+        },
+    });
 
 const User = require('./models/user').default(sequelize);
 const Question = require('./models/question').default(sequelize);
@@ -139,6 +143,18 @@ app.post('/api/questions', (req, res) => {
             .then(([{ id: newQuestionId }]) => res.status(201).json({ newQuestionId }));
 });
 
+app.post('/api/questions/:id', (req, res) => {
+    const userId = req.user.id;
+    const questionId = req.params.id;
+    UserAnswer.findOrCreate({
+        where: {
+            userId,
+            questionId,
+        },
+    }).then(([userAnswer]) => userAnswer.setChoices(req.body.choices.filter(c => c.checked).map(c => c.id)))
+      .then(() => res.status(200).json({}));
+});
+
 app.get('/api/questions', (req, res) => {
     Question.findAll({
         where: {
@@ -150,6 +166,20 @@ app.get('/api/questions', (req, res) => {
         }],
         order: 'createdAt DESC',
     }).then((results) => res.status(200).json(results.map(r => r.toJSON())));
+});
+
+app.get('/api/questions/random', (req, res) => {
+    const userId = req.user.id;
+    sequelize.query(`
+        SELECT Q.* FROM questions Q
+        LEFT OUTER JOIN userAnswers UA on Q.id = UA.questionId AND UA.userId = ${userId}
+        WHERE Q.userId != ${userId} and UA.id IS NULL
+        ORDER BY RAND()
+        LIMIT 1
+    `, { model: Question }).then(([question = null]) => {
+        if (!question) return res.status(200).json(question);
+        return question.getChoices().then(choices => res.status(200).json(Object.assign(question.toJSON(), { choices: choices.map(c => c.toJSON()) })));
+    });
 });
 
 app.use('/logout', (req, res) => {

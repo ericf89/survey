@@ -4,6 +4,7 @@ import questionForm from './questionForm';
 import loginForm from './loginForm';
 import username from './username';
 import stats from './stats';
+import home from './home';
 
 const rootReducer = combineReducers({
     routing: routeReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
     loginForm,
     username,
     stats,
+    home,
 });
 
 export default rootReducer;

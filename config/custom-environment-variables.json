@@ -8,5 +8,6 @@
     "redisIP":"REDIS_IP",
     "redisPort":"REDIS_PORT",
     "nodeEnv": "NODE_ENV",
-    "port": "PORT"
+    "port": "PORT",
+    "dbUrl": "DATABASE_URL"
 }

@@ -102,3 +102,39 @@ export function getCurrentStats() {
 
 export function nextStat() { return { type: types.NEXT_STAT }; }
 export function previousStat() { return { type: types.PREVIOUS_STAT }; }
+export function nextQuestion() { return { type: types.NEXT_QUESTION }; }
+export function previousQuestion() { return { type: types.PREVIOUS_QUESTION }; }
+
+export function getNextQuestion() {
+    return dispatch => {
+        dispatch({ type: types.GET_NEXT_QUESTION });
+        superagent.get('/api/questions/random')
+                  .end((err, res) => {
+                      const type = err ? types.GET_NEXT_QUESTION_FAILURE : types.GET_NEXT_QUESTION_SUCCESS;
+                      if (err) return dispatch({ type });
+                      dispatch({ type, question: res.body });
+                  });
+    };
+}
+
+export function toggleChoice(index) {
+    return {
+        type: types.TOGGLE_CHOICE,
+        index,
+    };
+}
+
+export function answerQuestion() {
+    return (dispatch, getState) => {
+        dispatch({ type: types.ANSWER_QUESTION });
+        const { home: { questions, questionIndex } } = getState();
+        const question = questions[questionIndex];
+        superagent.post(`/api/questions/${question.id}`)
+                  .send(question)
+                  .end((err) => {
+                      const type = err ? types.ANSWER_QUESTION_FAILURE : types.ANSWER_QUESTION_SUCCESS;
+                      if (err) return dispatch({ type });
+                      dispatch(getNextQuestion());
+                  });
+    };
+}

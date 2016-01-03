@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { logout, getCurrentStats } from 'app/actions';
+import { logout } from 'app/actions';
+import { replacePath } from 'redux-simple-router';
 
 const Dashboard = React.createClass({
     displayName: 'dashboard',
@@ -9,6 +10,10 @@ const Dashboard = React.createClass({
         children: PropTypes.object,
         username: PropTypes.string,
         dispatch: PropTypes.func.isRequired,
+    },
+    componentDidMount() {
+        const { username, dispatch } = this.props;
+        if (!username) dispatch(replacePath('/login'));
     },
     render() {
         const { username, dispatch } = this.props;
@@ -19,7 +24,6 @@ const Dashboard = React.createClass({
                       className="black-text col s5 offset-s2 card-panel center z-depth-1"
                       activeClassName="z-depth-3 white-text orange"
                       to="/dashboard/stats"
-                      onClick={() => dispatch(getCurrentStats())}
                     >
                         <h5>Stats</h5>
                     </Link>

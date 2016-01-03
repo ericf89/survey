@@ -1,12 +1,11 @@
 {
   "name": "survey",
   "version": "0.0.1",
-  "description": "Sumo survey app.",
   "main": "index.js",
   "scripts": {
     "lint": "eslint index.js ./src/**/*.js ./server/**/*.js --fix",
     "watch": "watchify -d src/js/entry.js -t babelify -o build/js/bundle.js -v",
-    "build": "browserify ./src/js/entry.js -t babelify -o ./build/js/bundle.js",
+    "build": "rsync -r ./src/fonts/ ./build/font/ && rsync -r ./src/img/ ./build/img/ && browserify ./src/js/entry.js -t babelify -o ./build/js/bundle.js",
     "start": "node index.js"
   },
   "repository": {
@@ -37,7 +36,7 @@
     "eslint-plugin-react": "^3.11.3",
     "express": "^4.13.3",
     "express-session": "^1.12.1",
-    "history": "1.13.0",
+    "history": "1.17.0",
     "jade": "^1.11.0",
     "morgan": "^1.6.1",
     "mysql": "^2.10.0",
@@ -60,5 +59,8 @@
     "sequelize": "^3.15.0",
     "superagent": "^1.6.1",
     "watchify": "^3.6.1"
+  },
+  "engines": {
+    "node": "4.2.3"
   }
 }

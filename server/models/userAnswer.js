@@ -1,7 +1,7 @@
-let userAnswer;
+let UserAnswer;
 export default function (SequelizeInst) {
-    if (!userAnswer) {
-        userAnswer = SequelizeInst.define('userAnswer', {});
+    if (!UserAnswer) {
+        UserAnswer = SequelizeInst.define('userAnswer', {});
     }
-    return userAnswer;
+    return UserAnswer;
 }
