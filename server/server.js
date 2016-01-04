@@ -21,6 +21,7 @@ const Store = redisStore(session);
 const storeOptions = {
     host: config.has('redisIP') ? config.get('redisIP') : undefined,
     port: config.has('redisPort') ? config.get('redisPort') : undefined,
+    url: config.has('redisUrl') ? config.get('redisUrl') : undefined,
 };
 
 const useRedis = storeOptions.host && storeOptions.port;

@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint index.js ./src/**/*.js ./server/**/*.js --fix",
     "watch": "watchify -d src/js/entry.js -t babelify -o build/js/bundle.js -v",
-    "build": "rsync -r ./src/fonts/ ./build/font/ && rsync -r ./src/img/ ./build/img/ && browserify ./src/js/entry.js -t babelify -o ./build/js/bundle.js",
+    "build": "browserify ./src/js/entry.js -t babelify -o ./build/js/bundle.js",
     "start": "node index.js"
   },
   "repository": {

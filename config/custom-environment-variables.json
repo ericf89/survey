@@ -9,5 +9,6 @@
     "redisPort":"REDIS_PORT",
     "nodeEnv": "NODE_ENV",
     "port": "PORT",
-    "dbUrl": "DATABASE_URL"
+    "dbUrl": "DATABASE_URL",
+    "redisUrl" "REDIS_URL"
 }
