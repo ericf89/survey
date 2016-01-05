@@ -29,9 +29,10 @@ Create a `local.json` file inside of the `config/` directory and put all the rel
 ### Setup/Install/Run
 1. First clone this repo!
 2. `npm install`
-3. Setup your local.json config. :arrow_up:
-4. `npm run build`  Bundles the js up and places it in the build dir.
-5. `npm start` Starts the server! (Give it a few sec to transpile the es6 on start up)
+3. `npm install -g browserify`
+4. Setup your local.json config. :arrow_up:
+5. `npm run build`  Bundles the js up and places it in the build dir.
+6. `npm start` Starts the server! (Give it a few sec to transpile the es6 on start up)
 
 By default the app listens on port 3000, so you should be able to hit http://localhost:3000
 
