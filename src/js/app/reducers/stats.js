@@ -13,6 +13,10 @@ export default function (state = defaultState, action) {
         return Object.assign({}, state, { currentIndex: state.currentIndex + 1 });
     case types.PREVIOUS_STAT:
         return Object.assign({}, state, { currentIndex: state.currentIndex - 1 });
+
+    case types.LOGIN_SUCCESS:
+    case types.LOGOUT:
+        return Object.assign({}, defaultState);
     default:
         return state;
     }

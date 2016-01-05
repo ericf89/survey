@@ -10,5 +10,5 @@
     "nodeEnv": "NODE_ENV",
     "port": "PORT",
     "dbUrl": "DATABASE_URL",
-    "redisUrl" "REDIS_URL"
+    "redisUrl": "REDIS_URL"
 }

@@ -24,7 +24,7 @@ const storeOptions = {
     url: config.has('redisUrl') ? config.get('redisUrl') : undefined,
 };
 
-const useRedis = storeOptions.host && storeOptions.port;
+const useRedis = (storeOptions.host && storeOptions.port) || storeOptions.url;
 if (useRedis) console.log('Using redis for session storage');
 app.use(session({
     store: useRedis ? new Store(storeOptions) : undefined,

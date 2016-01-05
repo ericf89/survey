@@ -16,7 +16,6 @@ function toggleChoice(state, index, multiAnswer) {
     return state.map((c, i) => Object.assign({}, c, { checked: i === index ? newValue : !newValue }));
 }
 
-
 export default function (state = defaultState, action) {
     switch (action.type) {
     case types.NEXT_QUESTION:
@@ -43,6 +42,11 @@ export default function (state = defaultState, action) {
                         ...questions.slice(questionIndex + 1),
                         ],
         });
+
+    case types.LOGIN_SUCCESS:
+    case types.LOGOUT:
+        return Object.assign({}, defaultState);
+
     default:
         return state;
     }

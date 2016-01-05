@@ -33,7 +33,7 @@ const Dashboard = React.createClass({
                       activeClassName="z-depth-3 white-text orange"
                       to="/dashboard/new-question"
                     >
-                        <h5>New&nbsp;Question</h5>
+                        <h5>New Question</h5>
                     </Link>
                 </div>
                 {this.props.children ||

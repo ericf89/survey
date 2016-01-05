@@ -92,7 +92,7 @@ const QuestionForm = React.createClass({
                     </div>
                 ))}
                 <div className="row">
-                    <div className="col offset-s11 s1">
+                    <div className="col offset-s10 s1">
                         { choices.length < 5 ? React.createElement('span',
                             {
                                 className: 'btn-floating',
