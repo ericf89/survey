@@ -11,6 +11,7 @@ const Home = React.createClass({
         dispatch: PropTypes.func.isRequired,
         questions: PropTypes.array.isRequired,
         questionIndex: PropTypes.number.isRequired,
+        loading: PropTypes.bool.isRequired,
         username: PropTypes.string,
     },
     componentWillMount() {
@@ -72,7 +73,7 @@ const Home = React.createClass({
         );
     },
     render() {
-        const { questionIndex, questions, dispatch } = this.props;
+        const { questionIndex, questions, dispatch, loading } = this.props;
         const { question } = this;
 
         const showNext = questionIndex < questions.length - 1;
@@ -92,7 +93,9 @@ const Home = React.createClass({
                         &nbsp;
                     </div>
                     <div className="col s10 center">
-                        <span className={cn('btn large', { disabled: !valid, hide: !question })} onClick={ () => valid ? dispatch(answerQuestion()) : null}>{ 'Submit' }</span>
+                        <span className={cn('btn large', { disabled: !valid, hide: !question })} onClick={ () => valid ? dispatch(answerQuestion()) : null}>
+                            { loading ? 'Loading...' : 'Submit' }
+                        </span>
                     </div>
                     <div className="col s1" onClick={() => dispatch(nextQuestion())} >
                         { showNext ?

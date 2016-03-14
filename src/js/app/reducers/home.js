@@ -3,6 +3,7 @@ import * as types from 'app/actions/types';
 const defaultState = {
     questionIndex: 0,
     questions: [],
+    loading: false,
 };
 
 function toggleChoice(state, index, multiAnswer) {
@@ -24,13 +25,22 @@ export default function (state = defaultState, action) {
     case types.PREVIOUS_QUESTION:
         return Object.assign({}, state, { questionIndex: state.questionIndex - 1 });
 
+    case types.ANSWER_QUESTION:
+    case types.GET_NEXT_QUESTION:
+        return state.loading ? state : Object.assign({}, state, { loading: true });
+
     case types.GET_NEXT_QUESTION_SUCCESS:
         const newQuestions = [...state.questions, action.question].filter(x => !!x);
         if (!action.question) newQuestions.push(null);
         return Object.assign({}, {
             questions: newQuestions,
             questionIndex: newQuestions.length - 1,
+            loading: false,
         });
+
+    case types.ANSWER_QUESTION_FAILURE:
+    case types.GET_NEXT_QUESTION_FAILURE:
+        return Object.assign({}, state, { loading: false });
 
     case types.TOGGLE_CHOICE:
         const { questions, questionIndex } = state;

@@ -12,6 +12,7 @@ const QuestionForm = React.createClass({
         prompt: PropTypes.string.isRequired,
         choices: PropTypes.array.isRequired,
         multiAnswer: PropTypes.bool.isRequired,
+        loading: PropTypes.bool.isRequired,
     },
     getInitialState() {
         const choices = this.props.choices;
@@ -45,13 +46,15 @@ const QuestionForm = React.createClass({
         }
     },
     render() {
-        const { prompt, choices, multiAnswer, dispatch } = this.props;
+        const { prompt, choices, multiAnswer, dispatch, loading } = this.props;
         let ctaButton = null;
         if (prompt.trim() !== '' && choices.length >= 2 && choices.every(c => c.value.trim() !== '')) {
             ctaButton = (
                 <div className="row">
                     <div className="col s12 m4 offset-m4">
-                        <span className="btn-large center" onClick={() => dispatch(submitNewQuestion())}> Ask Away! </span>
+                        <span className="btn-large center" onClick={() => dispatch(submitNewQuestion())}>
+                            { loading ? 'Loading...' : 'Ask Away!' }
+                        </span>
                     </div>
                 </div>
             );
